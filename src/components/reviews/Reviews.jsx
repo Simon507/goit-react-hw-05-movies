@@ -16,7 +16,6 @@ export const Reviews = () => {
 
   const { movieId } = useParams();
   const mainPhotoPath = 'https://image.tmdb.org/t/p/original';
-  const anonimous = 'https://pixabay.com/images/id-4764566/';
 
   const onBtnClick = e => {
     let pageNumber = page;
