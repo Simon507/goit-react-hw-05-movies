@@ -1,25 +1,26 @@
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 
-export const HomeList = () => {
+export const Cast = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [bestList, setBestList] = useState([]);
+  const [cast, setCast] = useState([]);
+
+  const { movieId } = useParams();
+  const mainPhotoPath = 'https://image.tmdb.org/t/p/original';
 
   useEffect(() => {
-    setLoading(true);
-
     async function Response() {
       await axios
         .get(
-          `https://api.themoviedb.org/3/trending/movie/day?api_key=6c2e7884d8582c075e4f6889ea94f7ad`
+          `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=6c2e7884d8582c075e4f6889ea94f7ad&language=en-US`
         )
         .then(obj => {
-          setBestList(obj.data.results);
+          setCast(obj.data.cast);
         })
         .catch(error => {
           setErrorMessage(error);
@@ -27,7 +28,7 @@ export const HomeList = () => {
         .finally(setLoading(false));
     }
     Response();
-  }, []);
+  }, [movieId]);
 
   return (
     <>
@@ -37,10 +38,11 @@ export const HomeList = () => {
         </LoaderBox>
       )}
       <ul>
-        {bestList.map(item => (
-          <Link to={`movies/${item.id}`} key={item.id}>
-            {item.original_title} 🐷
-          </Link>
+        {cast.map(item => (
+          <li key={item.id}>
+            <img src={`${mainPhotoPath}${item.profile_path}`} alt="" />
+            <p>{item.original_name}</p>
+          </li>
         ))}
       </ul>
       {errorMessage && <Toaster message={errorMessage} />}

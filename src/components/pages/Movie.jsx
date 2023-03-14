@@ -1,14 +1,17 @@
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
+import { Outlet, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export const HomeList = () => {
+const Movie = () => {
+  const [targetMovie, setTargetMovie] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [bestList, setBestList] = useState([]);
+
+  const { movieId } = useParams();
 
   useEffect(() => {
     setLoading(true);
@@ -16,10 +19,10 @@ export const HomeList = () => {
     async function Response() {
       await axios
         .get(
-          `https://api.themoviedb.org/3/trending/movie/day?api_key=6c2e7884d8582c075e4f6889ea94f7ad`
+          `https://api.themoviedb.org/3/movie/${movieId}?api_key=6c2e7884d8582c075e4f6889ea94f7ad&language=en-US`
         )
         .then(obj => {
-          setBestList(obj.data.results);
+          setTargetMovie(obj.data);
         })
         .catch(error => {
           setErrorMessage(error);
@@ -27,7 +30,7 @@ export const HomeList = () => {
         .finally(setLoading(false));
     }
     Response();
-  }, []);
+  }, [movieId]);
 
   return (
     <>
@@ -36,14 +39,16 @@ export const HomeList = () => {
           <Loader />
         </LoaderBox>
       )}
+      {targetMovie.original_title && <h2>{targetMovie.original_title}</h2>}
+
       <ul>
-        {bestList.map(item => (
-          <Link to={`movies/${item.id}`} key={item.id}>
-            {item.original_title} 🐷
-          </Link>
-        ))}
+        <Link to={'cast'}>111111</Link>
+        <Link to={'reviews'}>222222</Link>
       </ul>
+      <Outlet />
       {errorMessage && <Toaster message={errorMessage} />}
     </>
   );
 };
+
+export default Movie;

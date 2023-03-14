@@ -47,7 +47,7 @@ const Movies = () => {
           `https://api.themoviedb.org/3/search/movie?api_key=6c2e7884d8582c075e4f6889ea94f7ad&query=${target}&language=en-US&page=${page}`
         )
         .then(obj => {
-          console.log(obj);
+          // console.log(obj);
           if (obj.data.results.length === 0) {
             setErrorMessage(
               'There are no images for this request, please try another one!!!'
@@ -78,7 +78,7 @@ const Movies = () => {
       )}
       <ul>
         {collections.map(item => (
-          <Link to="/movies/:movieId" key={item.id}>
+          <Link to={`${item.id}`} key={item.id}>
             {item.original_title} 🐷
           </Link>
         ))}
