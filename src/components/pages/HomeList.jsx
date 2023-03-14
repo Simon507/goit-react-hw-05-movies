@@ -5,8 +5,6 @@ import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 
-// import { Link } from 'react-router-dom';
-
 export const HomeList = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);

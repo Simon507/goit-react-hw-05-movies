@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { SearchBar } from '../searchbar/SearchBar';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
+import { LoadMore } from '../loadMoreBtn/LoadMoreBtn';
 import { Link } from 'react-router-dom';
 
 const Movies = () => {
@@ -11,6 +12,14 @@ const Movies = () => {
   const [target, setTarget] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
+  const onBtnClick = e => {
+    let pageNumber = page;
+    pageNumber += 1;
+    setPage(pageNumber);
+  };
 
   const onSubmit = targetSubmit => {
     if (!targetSubmit || targetSubmit.length === 0) {
@@ -18,6 +27,7 @@ const Movies = () => {
     } else {
       if (targetSubmit !== target) {
         setCollections([]);
+        setPage(1);
       }
 
       setTarget(targetSubmit);
@@ -34,20 +44,20 @@ const Movies = () => {
     async function Response() {
       await axios
         .get(
-          `https://api.themoviedb.org/3/search/movie?api_key=6c2e7884d8582c075e4f6889ea94f7ad&query=${target}`
+          `https://api.themoviedb.org/3/search/movie?api_key=6c2e7884d8582c075e4f6889ea94f7ad&query=${target}&language=en-US&page=${page}`
         )
         .then(obj => {
-          //   if (obj.data.hits.length === 0) {
-          //     setErrorMessage(
-          //       'There are no images for this request, please try another one!!!'
-          //     );
-          //     return;
-          //   } else {
-          //     setCollections(obj.data.results);
-          //     setErrorMessage(null);
-          //   }
           console.log(obj);
-          console.log(obj.data.results);
+          if (obj.data.results.length === 0) {
+            setErrorMessage(
+              'There are no images for this request, please try another one!!!'
+            );
+            return;
+          } else {
+            setCollections(prevState => [...prevState, ...obj.data.results]);
+            setTotalPage(obj.data.total_pages);
+            setErrorMessage(null);
+          }
         })
         .catch(error => {
           setErrorMessage(error);
@@ -55,7 +65,7 @@ const Movies = () => {
         .finally(setLoading(false));
     }
     Response();
-  }, [target]);
+  }, [target, page]);
 
   return (
     <>
@@ -73,6 +83,10 @@ const Movies = () => {
           </Link>
         ))}
       </ul>
+      {collections.length > 0 && page < totalPage && (
+        <LoadMore onBtnClick={onBtnClick} />
+      )}
+
       {errorMessage && <Toaster message={errorMessage} />}
     </>
   );
