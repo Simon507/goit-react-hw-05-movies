@@ -1,7 +1,13 @@
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { LoaderBox } from '../loader/Loader.styles';
+import {
+  MainSection,
+  FilmList,
+  StyledLink,
+  FilmCard,
+  FilmImg,
+} from '../pages/HomeList.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 
@@ -9,6 +15,8 @@ export const HomeList = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [bestList, setBestList] = useState([]);
+
+  const mainPhotoPath = 'https://image.tmdb.org/t/p/original';
 
   useEffect(() => {
     setLoading(true);
@@ -30,20 +38,31 @@ export const HomeList = () => {
   }, []);
 
   return (
-    <>
+    <MainSection>
       {isLoading && (
         <LoaderBox>
           <Loader />
         </LoaderBox>
       )}
-      <ul>
+      <FilmList>
         {bestList.map(item => (
-          <Link to={`movies/${item.id}`} key={item.id} state={{ from: '/' }}>
-            {item.original_title} 🐷
-          </Link>
+          <StyledLink
+            to={`movies/${item.id}`}
+            key={item.id}
+            state={{ from: '/' }}
+          >
+            <FilmCard>
+              <FilmImg
+                src={`${mainPhotoPath}${item.poster_path}`}
+                alt={item.original_title}
+              ></FilmImg>
+              <h3>{item.original_title}</h3>
+              <p>Release data: {item.release_date}</p>
+            </FilmCard>
+          </StyledLink>
         ))}
-      </ul>
+      </FilmList>
       {errorMessage && <Toaster message={errorMessage} />}
-    </>
+    </MainSection>
   );
 };

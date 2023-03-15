@@ -4,8 +4,15 @@ import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 import { Outlet, useParams, useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+
 import { BackLink } from '../backLink/BackLink';
+import {
+  StyledLink,
+  MainSection,
+  AdditionalSection,
+  Poster,
+  MainTxtBlock,
+} from '../pages/Movie.styles';
 
 const Movie = () => {
   const [targetMovie, setTargetMovie] = useState('');
@@ -15,9 +22,9 @@ const Movie = () => {
   const { movieId } = useParams();
 
   const location = useLocation();
-  console.log(location);
   const backLinkHref = location.state?.from ?? '/';
-  console.log(location.state?.pathname);
+
+  const mainPhotoPath = 'https://image.tmdb.org/t/p/original';
 
   useEffect(() => {
     setLoading(true);
@@ -29,6 +36,8 @@ const Movie = () => {
         )
         .then(obj => {
           setTargetMovie(obj.data);
+
+          console.log(obj.data);
         })
         .catch(error => {
           setErrorMessage(error);
@@ -46,13 +55,39 @@ const Movie = () => {
         </LoaderBox>
       )}
       <BackLink to={backLinkHref}>Go back</BackLink>
-      {targetMovie.original_title && <h2>{targetMovie.original_title}</h2>}
 
-      <ul>
-        <Link to={'cast'}>111111</Link>
-        <Link to={'reviews'}>222222</Link>
-      </ul>
-      <Outlet />
+      <MainSection>
+        <Poster
+          src={`${mainPhotoPath}${targetMovie.poster_path}`}
+          alt={targetMovie.original_title}
+        />
+
+        <MainTxtBlock>
+          {targetMovie.original_title && (
+            <h2>
+              {targetMovie.original_title} (
+              {targetMovie.release_date.substr(0, 4)})
+            </h2>
+          )}
+          <p>User Score: {targetMovie.vote_average}</p>
+          <h4>Overview</h4>
+          <p>{targetMovie.overview}</p>
+          <h5>Genres</h5>
+          <ul>
+            {targetMovie.genres &&
+              targetMovie.genres.map(item => <p key={item.id}>{item.name}</p>)}
+          </ul>
+        </MainTxtBlock>
+      </MainSection>
+
+      <AdditionalSection>
+        <ul>
+          <StyledLink to={'cast'}>Cast</StyledLink>
+          <StyledLink to={'reviews'}>Reviews</StyledLink>
+        </ul>
+        <Outlet />
+      </AdditionalSection>
+
       {errorMessage && <Toaster message={errorMessage} />}
     </>
   );
