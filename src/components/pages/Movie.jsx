@@ -57,10 +57,12 @@ const Movie = () => {
       <BackLink to={backLinkHref}>Go back</BackLink>
 
       <MainSection>
-        <Poster
-          src={`${mainPhotoPath}${targetMovie.poster_path}`}
-          alt={targetMovie.original_title}
-        />
+        {targetMovie.poster_path && (
+          <Poster
+            src={`${mainPhotoPath}${targetMovie.poster_path}`}
+            alt={targetMovie.original_title}
+          />
+        )}
 
         <MainTxtBlock>
           {targetMovie.original_title && (
