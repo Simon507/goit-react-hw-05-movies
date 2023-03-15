@@ -5,38 +5,57 @@ import { SearchBar } from '../searchbar/SearchBar';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { LoadMore } from '../loadMoreBtn/LoadMoreBtn';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const Movies = () => {
   const [collections, setCollections] = useState([]);
-  const [target, setTarget] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams({});
+  // const [searchPage, setSearchPage] = useSearchParams('1');
+  const productName = searchParams.get('targetSubmit') ?? '';
+  const targetPage = searchParams.get('page');
+  // const [target, setTarget] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
 
-  const onBtnClick = e => {
-    let pageNumber = page;
-    pageNumber += 1;
-    setPage(pageNumber);
+  // test
+
+  const onBtnClick = () => {
+    const usedTarget = searchParams.get('targetSubmit');
+    const usedPage = searchParams.get('page');
+    const newPage = Number(usedPage) + 1;
+    console.log(usedTarget);
+    console.log(usedPage);
+    console.log(newPage);
+    setSearchParams({ targetSubmit: usedTarget, page: newPage });
+    // let pageNumber = page;
+    // console.log(page);
+    // pageNumber = Number(pageNumber) + Number(1);
+    // const nextPage = pageNumber;
+    // console.log(nextPage);
+    // setPage(nextPage);
   };
 
-  const onSubmit = targetSubmit => {
-    if (!targetSubmit || targetSubmit.length === 0) {
-      setErrorMessage('Please enter any words for request');
-    } else {
-      if (targetSubmit !== target) {
-        setCollections([]);
-        setPage(1);
-      }
+  // const targetPage = searchPage.get('page') ?? '8';
+  console.log(targetPage);
 
-      setTarget(targetSubmit);
-      setErrorMessage(null);
+  const onSubmit = targetSubmit => {
+    console.log(searchParams);
+    if (targetSubmit !== searchParams) {
+      setCollections([]);
+      // setSearchPage(1);
     }
+    console.log(targetSubmit);
+    const nextParams = targetSubmit !== '' ? { targetSubmit } : {};
+    console.log(nextParams);
+    setSearchParams({ targetSubmit: nextParams.targetSubmit, page: 1 });
+
+    setErrorMessage(null);
   };
 
   useEffect(() => {
-    if (!target) {
+    if (!productName) {
       return;
     }
     setLoading(true);
@@ -44,13 +63,13 @@ const Movies = () => {
     async function Response() {
       await axios
         .get(
-          `https://api.themoviedb.org/3/search/movie?api_key=6c2e7884d8582c075e4f6889ea94f7ad&query=${target}&language=en-US&page=${page}`
+          `https://api.themoviedb.org/3/search/movie?api_key=6c2e7884d8582c075e4f6889ea94f7ad&query=${productName}&language=en-US&page=${targetPage}`
         )
         .then(obj => {
-          // console.log(obj);
+          console.log(obj);
           if (obj.data.results.length === 0) {
             setErrorMessage(
-              'There are no images for this request, please try another one!!!'
+              'There are no movies for this request, please try another one!!!'
             );
             return;
           } else {
@@ -65,7 +84,7 @@ const Movies = () => {
         .finally(setLoading(false));
     }
     Response();
-  }, [target, page]);
+  }, [targetPage, productName]);
 
   return (
     <>
@@ -78,12 +97,16 @@ const Movies = () => {
       )}
       <ul>
         {collections.map(item => (
-          <Link to={`${item.id}`} key={item.id}>
+          <Link
+            to={`${item.id}`}
+            key={item.id}
+            state={{ from: `/movies?${searchParams}` }}
+          >
             {item.original_title} 🐷
           </Link>
         ))}
       </ul>
-      {collections.length > 0 && page < totalPage && (
+      {collections.length > 0 && targetPage < totalPage && (
         <LoadMore onBtnClick={onBtnClick} />
       )}
 

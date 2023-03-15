@@ -38,7 +38,7 @@ export const HomeList = () => {
       )}
       <ul>
         {bestList.map(item => (
-          <Link to={`movies/${item.id}`} key={item.id}>
+          <Link to={`movies/${item.id}`} key={item.id} state={{ from: '/' }}>
             {item.original_title} 🐷
           </Link>
         ))}

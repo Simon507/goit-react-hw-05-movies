@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { BackLink } from '../backLink/BackLink';
 
 const Movie = () => {
   const [targetMovie, setTargetMovie] = useState('');
@@ -12,6 +13,11 @@ const Movie = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const { movieId } = useParams();
+
+  const location = useLocation();
+  console.log(location);
+  const backLinkHref = location.state?.from ?? '/';
+  console.log(location.state?.pathname);
 
   useEffect(() => {
     setLoading(true);
@@ -39,6 +45,7 @@ const Movie = () => {
           <Loader />
         </LoaderBox>
       )}
+      <BackLink to={backLinkHref}>Go back</BackLink>
       {targetMovie.original_title && <h2>{targetMovie.original_title}</h2>}
 
       <ul>

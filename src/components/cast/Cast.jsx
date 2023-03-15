@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
+import { nanoid } from 'nanoid';
 
 export const Cast = () => {
   const [isLoading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ export const Cast = () => {
       )}
       <ul>
         {cast.map(item => (
-          <li key={item.id}>
+          <li key={nanoid(8)}>
             <img src={`${mainPhotoPath}${item.profile_path}`} alt="" />
             <p>{item.original_name}</p>
           </li>
