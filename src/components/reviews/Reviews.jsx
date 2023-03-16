@@ -15,7 +15,7 @@ import {
   ReviewTxt,
 } from '../reviews/Reviews.styles';
 
-export const Reviews = () => {
+const Reviews = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [review, setReview] = useState([]);
@@ -99,3 +99,5 @@ https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=6c2e7884d8582c075e
     </>
   );
 };
+
+export default Reviews;

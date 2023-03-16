@@ -4,6 +4,7 @@ import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 import { Outlet, useParams, useLocation } from 'react-router-dom';
+import { Suspense } from 'react';
 
 import { BackLink } from '../backLink/BackLink';
 import {
@@ -97,7 +98,15 @@ const Movie = () => {
             Reviews
           </StyledLink>
         </AdditionalUl>
-        <Outlet />
+        <Suspense
+          fallback={
+            <LoaderBox>
+              <Loader />
+            </LoaderBox>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </AdditionalSection>
 
       {errorMessage && <Toaster message={errorMessage} />}

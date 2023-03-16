@@ -11,7 +11,7 @@ import {
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 
-export const HomeList = () => {
+const HomeList = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [bestList, setBestList] = useState([]);
@@ -66,3 +66,5 @@ export const HomeList = () => {
     </MainSection>
   );
 };
+
+export default HomeList;

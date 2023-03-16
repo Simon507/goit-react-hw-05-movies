@@ -1,5 +1,8 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
 import styled from 'styled-components';
+import Loader from './loader/Loader';
+import { LoaderBox } from './loader/Loader.styles';
 
 const StyledLink = styled(NavLink)`
   color: black;
@@ -32,7 +35,15 @@ export const Layout = () => {
         <StyledLink to="/movies">Movies</StyledLink>
       </NavigationBar>
       <main>
-        <Outlet />
+        <Suspense
+          fallback={
+            <LoaderBox>
+              <Loader />
+            </LoaderBox>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
     </header>
   );

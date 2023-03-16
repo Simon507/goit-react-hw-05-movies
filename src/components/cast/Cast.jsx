@@ -7,7 +7,7 @@ import { Toaster } from '../Toaster';
 import { nanoid } from 'nanoid';
 import { CastList, CastItem } from '../cast/Cast.styles';
 
-export const Cast = () => {
+const Cast = () => {
   const [isLoading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [cast, setCast] = useState([]);
@@ -63,3 +63,5 @@ export const Cast = () => {
     </>
   );
 };
+
+export default Cast;
