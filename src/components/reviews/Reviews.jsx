@@ -6,6 +6,14 @@ import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 import { LoadMore } from '../loadMoreBtn/LoadMoreBtn';
 import { nanoid } from 'nanoid';
+import {
+  ReviewList,
+  ReviewItem,
+  ReviewAvatar,
+  Author,
+  DatesInfo,
+  ReviewTxt,
+} from '../reviews/Reviews.styles';
 
 export const Reviews = () => {
   const [isLoading, setLoading] = useState(false);
@@ -31,8 +39,6 @@ export const Reviews = () => {
 https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=6c2e7884d8582c075e4f6889ea94f7ad&language=en-US&page=${page}`
         )
         .then(obj => {
-          console.log(obj);
-
           setReview(prevState => [...prevState, ...obj.data.results]);
           setTotalPage(obj.data.total_pages);
         })
@@ -51,29 +57,40 @@ https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=6c2e7884d8582c075e
           <Loader />
         </LoaderBox>
       )}
-      <ul>
-        {review.map(item => (
-          <li key={nanoid(8)}>
-            <h4>{item.author}</h4>
-            {!item.author_details.avatar_path ||
-            item.author_details.avatar_path.length > 50 ? (
-              <img
-                src="https://www.gravatar.com/avatar/96c2e0e4ac98450f9e8e3c0a0a40aad8.jpg"
-                alt="userAvatar"
-              />
-            ) : (
-              <img
-                src={`${mainPhotoPath}${item.author_details.avatar_path}`}
-                alt="userAvatar"
-              />
-            )}
+      <ReviewList>
+        {review.length === 0 ? (
+          <h3>Sorry. Is no review...</h3>
+        ) : (
+          review.map(item => (
+            <ReviewItem key={nanoid(8)}>
+              <Author>
+                {!item.author_details.avatar_path ||
+                item.author_details.avatar_path.length > 50 ? (
+                  <ReviewAvatar
+                    src="https://www.gravatar.com/avatar/96c2e0e4ac98450f9e8e3c0a0a40aad8.jpg"
+                    alt="userAvatar"
+                  />
+                ) : (
+                  <ReviewAvatar
+                    src={`${mainPhotoPath}${item.author_details.avatar_path}`}
+                    alt="userAvatar"
+                  />
+                )}
+                <h5>{item.author}</h5>
+              </Author>
 
-            <p>{item.content}</p>
-            <p>{item.created_at}</p>
-            <p>{item.updated_at}</p>
-          </li>
-        ))}
-      </ul>
+              <ReviewTxt>{item.content}</ReviewTxt>
+
+              <DatesInfo>
+                <h5>Posted</h5>
+                <p>{item.created_at.substr(0, 10)}</p>
+                <h5>Updated</h5>
+                <p>{item.updated_at.substr(0, 10)}</p>
+              </DatesInfo>
+            </ReviewItem>
+          ))
+        )}
+      </ReviewList>
       {review.length > 0 && page < totalPage && (
         <LoadMore onBtnClick={onBtnClick} />
       )}

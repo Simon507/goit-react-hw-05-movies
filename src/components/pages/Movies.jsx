@@ -5,7 +5,14 @@ import { SearchBar } from '../searchbar/SearchBar';
 import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { LoadMore } from '../loadMoreBtn/LoadMoreBtn';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import {
+  StyledLink,
+  MainSection,
+  FilmList,
+  FilmCard,
+  FilmImg,
+} from './Movies.styled';
 
 const Movies = () => {
   const [collections, setCollections] = useState([]);
@@ -18,6 +25,8 @@ const Movies = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [totalPage, setTotalPage] = useState(1);
+
+  const mainPhotoPath = 'https://image.tmdb.org/t/p/original';
 
   const onBtnClick = () => {
     const usedTarget = searchParams.get('targetSubmit');
@@ -71,7 +80,7 @@ const Movies = () => {
   }, [targetPage, productName]);
 
   return (
-    <>
+    <MainSection>
       <SearchBar onSubmit={onSubmit}></SearchBar>
 
       {isLoading && (
@@ -79,23 +88,41 @@ const Movies = () => {
           <Loader />
         </LoaderBox>
       )}
-      <ul>
+
+      <FilmList>
         {collections.map(item => (
-          <Link
+          <StyledLink
             to={`${item.id}`}
             key={item.id}
             state={{ from: `/movies?${searchParams}` }}
           >
-            {item.original_title} 🐷
-          </Link>
+            <FilmCard>
+              {item.poster_path ? (
+                <FilmImg
+                  src={`${mainPhotoPath}${item.poster_path}`}
+                  alt={item.original_title}
+                ></FilmImg>
+              ) : (
+                <FilmImg
+                  src={
+                    'https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png'
+                  }
+                  alt={item.original_title}
+                ></FilmImg>
+              )}
+              <h3>{item.original_title}</h3>
+              <p>Release data: {item.release_date}</p>
+            </FilmCard>
+          </StyledLink>
         ))}
-      </ul>
+      </FilmList>
+
       {collections.length > 0 && targetPage < totalPage && (
         <LoadMore onBtnClick={onBtnClick} />
       )}
 
       {errorMessage && <Toaster message={errorMessage} />}
-    </>
+    </MainSection>
   );
 };
 

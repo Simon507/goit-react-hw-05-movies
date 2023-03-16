@@ -12,6 +12,7 @@ import {
   AdditionalSection,
   Poster,
   MainTxtBlock,
+  AdditionalUl,
 } from '../pages/Movie.styles';
 
 const Movie = () => {
@@ -57,9 +58,14 @@ const Movie = () => {
       <BackLink to={backLinkHref}>Go back</BackLink>
 
       <MainSection>
-        {targetMovie.poster_path && (
+        {targetMovie.poster_path ? (
           <Poster
             src={`${mainPhotoPath}${targetMovie.poster_path}`}
+            alt={targetMovie.original_title}
+          />
+        ) : (
+          <Poster
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png"
             alt={targetMovie.original_title}
           />
         )}
@@ -83,10 +89,14 @@ const Movie = () => {
       </MainSection>
 
       <AdditionalSection>
-        <ul>
-          <StyledLink to={'cast'}>Cast</StyledLink>
-          <StyledLink to={'reviews'}>Reviews</StyledLink>
-        </ul>
+        <AdditionalUl>
+          <StyledLink to={'cast'} state={{ from: backLinkHref }}>
+            Cast
+          </StyledLink>
+          <StyledLink to={'reviews'} state={{ from: backLinkHref }}>
+            Reviews
+          </StyledLink>
+        </AdditionalUl>
         <Outlet />
       </AdditionalSection>
 

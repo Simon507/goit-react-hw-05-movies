@@ -5,6 +5,7 @@ import { LoaderBox } from '../loader/Loader.styles';
 import Loader from '../loader/Loader';
 import { Toaster } from '../Toaster';
 import { nanoid } from 'nanoid';
+import { CastList, CastItem } from '../cast/Cast.styles';
 
 export const Cast = () => {
   const [isLoading, setLoading] = useState(false);
@@ -38,14 +39,26 @@ export const Cast = () => {
           <Loader />
         </LoaderBox>
       )}
-      <ul>
-        {cast.map(item => (
-          <li key={nanoid(8)}>
-            <img src={`${mainPhotoPath}${item.profile_path}`} alt="" />
-            <p>{item.original_name}</p>
-          </li>
-        ))}
-      </ul>
+      <CastList>
+        {cast.length === 0 ? (
+          <h3>Sorry. There is no information about the cast...</h3>
+        ) : (
+          cast.map(item => (
+            <CastItem key={nanoid(8)}>
+              {item.profile_path ? (
+                <img src={`${mainPhotoPath}${item.profile_path}`} alt="" />
+              ) : (
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/2b/No-Photo-Available-240x300.jpg"
+                  alt=""
+                />
+              )}
+
+              <p>{item.original_name}</p>
+            </CastItem>
+          ))
+        )}
+      </CastList>
       {errorMessage && <Toaster message={errorMessage} />}
     </>
   );
