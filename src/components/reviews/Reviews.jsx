@@ -29,6 +29,7 @@ export const Reviews = () => {
     let pageNumber = page;
     pageNumber += 1;
     setPage(pageNumber);
+    window.scrollTo(0, 1000);
   };
 
   useEffect(() => {
